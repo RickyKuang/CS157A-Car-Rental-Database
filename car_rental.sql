@@ -11,42 +11,42 @@ DROP TABLE IF EXISTS REVIEWS;
 DROP TABLE IF EXISTS AGENCY;
 CREATE TABLE AGENCY
 (
-	city VARCHAR(50),
-    zip INT,
-    rentDate DATE,
-    dueDate DATE,
-    aID INT,
-    rID INT
+	agencyID INT PRIMARY KEY,
+    city VARCHAR(50),
+    reviewID INT REFERENCES REVIEWS(reviewID),
+    bookingID INT REFERENCES BOOKING(bookingID)
 );
 
-CREATE TABLE AGENT
+CREATE TABLE BOOKING
 (
-	aID INT,
-    cID INT,
-    city VARCHAR(50)
+	bookingID INT PRIMARY KEY,
+    carID INT REFERENCES CARS(carID),
+    rentDate date,
+    dueDate date
 );
 
 CREATE TABLE CARS
 (
+	carID INT PRIMARY KEY,
 	model INT,
     year INT,
     brand VARCHAR(50),
     color VARCHAR(10),
-    type VARCHAR(10),
-    carID INT
+    type VARCHAR(10)
 );
 
 CREATE TABLE CUSTOMER
 (
-	cID INT,
-    aID INT,
+	customerID INT PRIMARY KEY,
+    agencyID INT REFERENCES AGENCY(agencyID),
     insurance VARCHAR(50),
-    carID INT
+    carID INT REFERENCES CARS(carID),
+    reviewID INT REFERENCES REVIEWS(reviewID),
+    bookingID INT REFERENCES BOOKING(bookingID)
 );
 
 CREATE TABLE REVIEWS
 (
-	rID INT,
-    cID INT,
+	reviewID INT PRIMARY KEY,
     stars INT
 );
