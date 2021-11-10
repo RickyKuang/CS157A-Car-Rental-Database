@@ -31,7 +31,8 @@ CREATE TABLE CARS
     year INT,
     brand VARCHAR(50),
     color VARCHAR(10),
-    type VARCHAR(10)
+    type VARCHAR(10),
+    rented BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE CUSTOMER
