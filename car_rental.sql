@@ -21,7 +21,8 @@ CREATE TABLE BOOKING
 	bookingID INT PRIMARY KEY,
     carID INT REFERENCES CARS(carID),
     rentDate date,
-    dueDate date
+    dueDate date,
+    overdue BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE CARS
@@ -32,7 +33,8 @@ CREATE TABLE CARS
     brand VARCHAR(50),
     color VARCHAR(10),
     type VARCHAR(10),
-    rented BOOLEAN DEFAULT FALSE
+    rented BOOLEAN DEFAULT FALSE,
+    rentPrice INT
 );
 
 CREATE TABLE CUSTOMER
