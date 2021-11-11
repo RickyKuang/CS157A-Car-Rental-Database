@@ -34,7 +34,8 @@ CREATE TABLE CARS
     color VARCHAR(10),
     type VARCHAR(10),
     rented BOOLEAN DEFAULT FALSE,
-    rentPrice INT
+    rentPrice INT,
+    updatedAt TIMESTAMP
 );
 
 CREATE TABLE CUSTOMER
