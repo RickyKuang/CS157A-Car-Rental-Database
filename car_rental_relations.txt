@@ -1,0 +1,190 @@
+CAR RENTAL AGENCY DB BCNF/3NF RELATIONS
+
+AGENT(agentID, agentName, totalClients)
+
+Functional Dependencies:
+	agentID -> agentName
+	agentID, agentName -> totalClients
+
+Closures:
+{agentID}+ = {agentID, agentName, totalClients} KEY
+{agentName}+ = {agentName}
+{totalClients}+ = {totalClients}
+
+{agentID, agentName}+ = {agentID, agentName, totalClients}
+{agentID, totalClients}+ = {agentID, totalClients, agentName}
+{agentName, totalClients}+ = trivial
+
+{agentID, agentName, totalClients}+ = trivial
+
+KEY(s): (agentID)
+Relation type: BCNF
+
+-----------------------------------------------------------------------------------------------
+
+BOOKING(bookingID, bookedCarID, rentDate, dueDate, overdue)
+
+Functional Dependencies:
+	bookingID -> bookedCarID
+	bookingID -> rentDate
+	bookingID -> dueDate
+	bookingID -> overdue
+
+Closures:
+{bookingID}+ = {bookingID, bookedCarID, rentDate, dueDate, overdue} KEY
+{bookedCarID}+ = {bookedCarID}
+{rentDate}+ = {rentDate}
+{dueDate}+ = {dueDate}
+{overdue}+ = {overdue}
+
+{bookingID, bookedCarID}+ = bookingID is key
+{bookingID, rentDate}+ = bookingID is key
+{bookingID, dueDate}+ = bookingID is key
+{bookingID, overdue}+ = bookingID is key
+{bookedCarID, rentDate}+ = trivial
+{bookedCarID, dueDate}+ = trivial
+{bookedCarID, overdue}+ = trivial
+{rentDate, dueDate}+ = trivial
+{rentDate, overdue}+ = trivial
+{dueDate, overdue}+ = trivial
+
+{bookingID, bookedCarID, rentDate}+ = bookingID is key
+{bookingID, bookedCarID, dueDate}+ = bookingID is key
+{bookingID, bookedCarID, overdue}+ = bookingID is key
+{bookingID, rentDate, dueDate}+ = bookingID is key
+{bookingID, rentDate, overdue}+ = bookingID is key
+{bookingID, dueDate, overdue}+ = bookingID is key
+{bookedCarID, rentDate, dueDate}+ = trivial
+{bookedCarID, rentDate, overdue}+ = trivial
+{bookedCarID, dueDate, overdue}+ = trivial
+{rentDate, dueDate, overdue}+ = trivial
+
+{bookingID, bookedCarID, rentDate, dueDate}+ = {bookingID, bookedCarID, rentDate, dueDate, overdue}
+{bookingID, bookedCarID, rentDate, overdue}+ = bookingID is key
+{bookingID, bookedCarID, dueDate, overdue}+ = bookingID is key
+{bookingID, rentDate, dueDate, overdue}+ = bookingID is key
+{bookedCarID, rentDate, dueDate, overdue}+ = trivial
+
+{bookingID, bookedCarID, rentDate, dueDate, overdue}+ = trivial
+
+KEY(s): (bookingID)
+Relation: BCNF
+
+-----------------------------------------------------------------------------------------------
+
+CARS(carID, brand, year, color, type, rentPrice, rented, updatedAt)
+
+Functional Dependencies:
+	carID, brand, year -> color
+	carID, brand, year -> type
+	carID, brand, year, type -> rentPrice
+	carID -> rented
+	carID, rented -> updatedAt
+
+Closures:
+{carID}+ = {carID, rented, updatedAt}
+{brand}+ = {brand}
+{year}+ = {year}
+{color}+ = {color}
+{type}+ = {type}
+{rentPrice}+ = {rentPrice}
+{rented}+ = {rented}
+{updatedAt}+ = {updatedAt}
+
+{carID, brand}+ = {carID, brand, rented, updatedAt}
+{carID, year}+ = {carID, year, rented, updatedAt}
+{carID, color}+ = {carID, color, rented, updatedAt}
+{carID, type}+ = {carID, type, rented, updatedAt}
+{carID, rentPrice}+ = {carID, rentPrice, rented, updatedAt}
+{carID, rented}+ = {carID, rented, updatedAt}
+
+{carID, brand, year}+ = {carID, brand, year, color, type, rentPrice, rented, updatedAt} KEY
+{carID, brand, color}+ = {carID, brand, color, rented, updatedAt}
+{carID, brand, type}+ = {carID, brand, type, rented, updatedAt}
+{carID, brand, rentPrice}+ = {carID, brand, rentPrice, rented, updatedAt}
+{carID, brand, rented}+ = {carID, brand, rented, updatedAt}
+{carID, brand, updatedAt}+ = {carID, brand, updatedAt, rented}
+{brand, year, color}+ = trivial
+{brand, year, type}+ = trivial
+{brand, year, rentPrice}+ = trivial
+.
+.
+.
+
+KEY(s): (carID, brand, year)
+Relation Type: 3NF
+
+-----------------------------------------------------------------------------------------------
+
+CUSTOMER(customerID, customerName, assignedAgent, assignedCar)
+
+Functional Dependencies:
+	customerID -> customerName
+	customerID -> assignedAgent
+	customerID, customerName -> assignedCar
+
+Closures:
+{customerID}+ = {customerID, customerName, assignedAgent, assignedCar} KEY
+{customerName}+ = {customerName}
+{assignedAgent}+ = {assignedAgent}
+{assignedCar}+ = {assignedCar}
+
+{customerID, customerName}+ = {customerID, customerName, assignedCar, assignedAgent}
+{customerID, assignedAgent}+ = customerID is key
+{customerID, assignedCar}+ = customerID is key
+{customerName, assignedAgent}+ = trivial
+{customerName, assignedCar}+ = trivial
+{assignedAgent, assignedCar}+ = trivial
+{customerID, customerName, assignedAgent}+ = customerID is key
+{customerID, customerName, assignedCar}+ = customerID is key
+{customerID, assignedAgent, assignedCar}+ = customerID is key
+{customerName, assignedAgent, assignedCar}+ = trivial
+{customerID, customerName, assignedAgent, assignedCar}+ = trivial
+
+KEY(s): (customerID)
+Relation Type: BCNF
+
+-----------------------------------------------------------------------------------------------
+
+REVIEWS(reviewID, stars, reviewedAgentID, reviewer, updatedAt)
+
+Functional Dependencies:
+	reviewID -> reviewer
+	reviewID -> updatedAt
+	reviewer -> reviewedAgentID
+	reviewer, reviewedAgentID -> stars
+	reviewer, reviewedAgentID -> reviewID
+
+Closures:
+{reviewID}+ = {reviewID, reviewer, updatedAt, reviewedAgentID, stars} KEY
+{stars}+ = {stars}
+{reviewedAgentID}+ = {reviewedAgentID}
+{reviewer}+ = {reviewer, reviewedAGentID}
+{updatedAt}+ = {updatedAt}
+
+{reviewID, stars}+ = reviewID is key
+{reviewID, reviewedAgentID}+ = reviewID is key
+{reviewID, reviewer}+ = reviewID is key
+{reviewID, updatedAt}+ = reviewID is key
+{stars, reviewedAgentID}+ = trivial
+{stars, reviewer}+ = trivial
+{stars, updatedAt}+ = trivial
+{reviewedAgentID, reviewer}+ = {reviewer, reviewedAGentID, stars, reviewID, updatedAt} KEY
+{reviewedAgentID, updatedAt}+ = trivial
+{reviewer, updatedAt}+ = {reviewer, updatedAt, reviewedAgentID, stars, reviewID}
+
+{reviewID, stars, reviewedAgentID}+ = reviewID is key
+{reviewID, stars, reviewer}+ = reviewID is key
+{reviewID, stars, updatedAt}+ = reviewID is key
+{stars, reviewedAgentID, reviewer}+ = (reviewer, reviewedAgentID) is key
+{stars, reviewedAgentID, updatedAt}+ = trivial
+{reviewedAgentID, reviewer, updatedAt}+ = (reviewer, reviewedAgentID) is key
+
+{reviewID, stars, reviewedAgentID, reviewer}+ = reviewID and (reviewedAgentID, reviewer) is key
+{reviewID, reviewedAgentID, reviewer, updatedAt}+ = reviewID and (reviewedAgentID, reviewer) is key
+
+{reviewID, reviewer, updatedAt, reviewedAgentID, stars} = trivial
+
+KEY(s): reviewID, (reviewer, reviewedAgentID)
+
+Relation Type: BCNF
