@@ -134,3 +134,4 @@ insert into REVIEWS values (1, 3, 3, 1000);
 insert into REVIEWS values (2, 5, 1, 1001);
 insert into REVIEWS values (3, 1, 5, 1001);
 insert into REVIEWS values (4, 4, 2, 1002);
+
