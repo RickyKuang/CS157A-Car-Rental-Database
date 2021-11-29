@@ -1,0 +1,37 @@
+// AGENT
+// (agentID, agentName, totalClients)
+1	'Charles'	1
+2	'Alex'	2
+3	'Jung'	1
+4	'Janet'	0
+5	'Gerald'	0
+
+// BOOKING
+// (bookingID, bookedCarID, rentDate, dueDate, overdue)
+10	101	'2021-10-01'	'2021-11-01'	1
+11	103	'2021-11-02'	'2021-12-02'	0
+12	105	'2021-11-15'	'2021-11-30'	0
+
+// CARS
+// (carID, brand, year, color type, rentPrice, rented, updatedAt)
+101	'Toyota'	2018	'red'	'hybrid'	30	1
+102	'Toyota'	2020	'green'	'gas'	25	0
+103	'Chevrolet'	2021	'yellow'	'gas'	40	1
+104	'Tesla'	2016	'white'	'electric'	50	0
+105	'Lexus'	2019	'black'	'hybrid'	40	1
+
+// CUSTOMER
+// (customerID, customerName, assignedAgent, assignedCar)
+1000	'Dan'	'Jung'	101
+1001	'Nancy'	'Charles'	103
+1002	'John'	'Alex'	105
+1003	'Walter'	\N	\N
+1004	'Artemis'	\N	\N
+1005	'Conner'	'Alex'	\N
+
+// REVIEWS
+// (reviewID, stars, reviewedAgentID, reviewer, updatedAt)
+1	3	3	1000
+2	5	1	1001
+3	1	5	1001
+4	4	2	1002
