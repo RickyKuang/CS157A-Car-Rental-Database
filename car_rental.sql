@@ -10,45 +10,102 @@ DROP TABLE IF EXISTS REVIEWS;
 
 CREATE TABLE AGENT
 (
-	agentID INT PRIMARY KEY,
-    agentName VARCHAR(50),
-    totalClients INT DEFAULT 0
+agentID INT PRIMARY KEY AUTO_INCREMENT,
+agentName VARCHAR(50),
+totalClients INT DEFAULT 0
 );
+ALTER table AGENT AUTO_INCREMENT = 1;
 
 CREATE TABLE BOOKING
 (
-	bookingID INT PRIMARY KEY,
-    bookedCarID INT REFERENCES CARS(carID),
-    rentDate date,
-    dueDate date,
-    overdue BOOLEAN DEFAULT FALSE
+bookingID INT PRIMARY KEY,
+bookedCarID INT REFERENCES CARS(carID),
+rentDate date,
+dueDate date,
+overdue BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE CARS
 (
-	carID INT PRIMARY KEY,
-	brand VARCHAR(50),
-    year INT,
-    color VARCHAR(10),
-    type VARCHAR(10),
-    rentPrice INT,
-    rented BOOLEAN DEFAULT FALSE,
-    updatedAt TIMESTAMP
+carID INT PRIMARY KEY AUTO_INCREMENT,
+brand VARCHAR(50),
+year INT CHECK (year >= 2000),
+color VARCHAR(10),
+type VARCHAR(10),
+rentPrice INT,
+rented BOOLEAN DEFAULT FALSE,
+updatedAt TIMESTAMP,
+UNIQUE KEY(carID, brand, year)
 );
+ALTER table CARS AUTO_INCREMENT = 101;
 
 CREATE TABLE CUSTOMER
 (
-	customerID INT PRIMARY KEY,
-    customerName VARCHAR(50),
-    assignedAgent VARCHAR(50) REFERENCES AGENTS(agentID),
-    assignedCar INT REFERENCES CARS(carID)
+customerID INT PRIMARY KEY,
+customerName VARCHAR(50),
+assignedAgent VARCHAR(50) REFERENCES AGENTS(agentID),
+assignedCar INT REFERENCES CARS(carID)
 );
 
 CREATE TABLE REVIEWS
 (
-	reviewID INT PRIMARY KEY,
-    stars INT,
-    reviewedAgentID INT REFERENCES AGENTS(agentID),
-    reviewer INT REFERENCES CUSTOMER(customerID),
-    updatedAt TIMESTAMP
+reviewID INT PRIMARY KEY,
+stars INT CHECK (stars >= 1 AND stars <= 5),
+reviewedAgentID INT REFERENCES AGENTS(agentID),
+reviewer INT REFERENCES CUSTOMER(customerID),
+updatedAt TIMESTAMP,
+UNIQUE KEY(reviewer, reviewedAgentID)
 );
+
+CREATE TABLE ARCHIVECARS
+(
+carID INT PRIMARY KEY,
+brand VARCHAR(50),
+year INT,
+color VARCHAR(10),
+type VARCHAR(10),
+rentPrice INT,
+rented BOOLEAN,
+timeStamp DATE
+);
+
+CREATE TABLE ARCHIVEREVIEWS
+(
+reviewID INT PRIMARY KEY,
+stars INT,
+reviewedAgentID INT,
+reviewer INT,
+timeStamp DATE
+);
+
+/* STORED PROCEDURES */
+DROP PROCEDURE IF EXISTS getCarIDsByBrand;
+DELIMITER //
+CREATE PROCEDURE getCarIDsByBrand (IN carBrand VARCHAR(50))
+BEGIN
+SELECT carID FROM Car
+WHERE brand = carBrand;
+END //
+DELIMITER ;
+
+/* TRIGGERS */
+/* Expensive Cars */
+/*
+DROP TRIGGER expensiveCars;
+CREATE TRIGGER expensiveCars
+BEFORE INSERT ON Car
+FOR EACH ROW
+BEGIN
+IF RentPrice = 5000
+PRINT 'THIS IS AN EXPENSIVE CAR'
+END;
+*/
+/* Rental Period Done */ /*
+DROP TRIGGER rentalDone;
+CREATE TRIGGER RentalDone
+BEFORE DELETE ON Customer, Booking
+FOR EACH ROW
+BEGIN
+IF dueDate = ? AND Overdue = 0;
+DELETE FROM Customer WHERE CustomerID = ?;
+END;*/
