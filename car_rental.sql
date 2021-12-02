@@ -96,13 +96,13 @@ DELIMITER ;
 /* Archiving Customer */
 DROP PROCEDURE IF EXISTS archiveCustomer;
 DELIMITER //
-CREATE PROCEDURE archiveCustomer (IN lastUpdated TIMESTAMP)
+CREATE PROCEDURE archiveCustomer (IN cutoff TIMESTAMP)
 BEGIN
 	INSERT INTO ARCHIVE_CUSTOMER
-    SELECT * FROM CUSTOMER WHERE lastUpdated < CUSTOMER.updatedAt;
+    SELECT * FROM CUSTOMER WHERE cutoff < CUSTOMER.updatedAt;
     
     SET FOREIGN_KEY_CHECKS = 0;
-    DELETE FROM CUSTOMER WHERE lastUpdated < CUSTOMER.updatedAt;
+    DELETE FROM CUSTOMER WHERE cutoff < CUSTOMER.updatedAt;
     SET FOREIGN_KEY_CHECKS = 1;
 END //
 DELIMITER ;
@@ -110,12 +110,12 @@ DELIMITER ;
 /* Archiving Booking */
 DROP PROCEDURE IF EXISTS archiveBooking;
 DELIMITER //
-CREATE PROCEDURE archiveBooking (IN lastUpdated TIMESTAMP)
+CREATE PROCEDURE archiveBooking (IN cutoff TIMESTAMP)
 BEGIN
 	INSERT INTO ARCHIVE_BOOKING
-    SELECT * FROM BOOKING WHERE lastUpdated < BOOKING.updatedAt;
+    SELECT * FROM BOOKING WHERE cutoff < BOOKING.updatedAt;
     
-    DELETE FROM BOOKING WHERE lastUpdated < BOOKING.updatedAt;
+    DELETE FROM BOOKING WHERE cutoff < BOOKING.updatedAt;
 END //
 DELIMITER ;
 
@@ -192,11 +192,3 @@ insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (1, 3, 3,
 insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (2, 5, 1, 1001);
 insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (3, 1, 5, 1001);
 insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (4, 4, 2, 1002);
-
-SELECT * FROM CARS;
-SELECT * FROM AGENT;
-SELECT * FROM REVIEWS;
-SELECT * FROM CUSTOMER;
-SELECT * FROM BOOKING;
-SELECT * FROM ARCHIVE_CUSTOMER;
-SELECT * FROM ARCHIVE_BOOKING;
