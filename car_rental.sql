@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS BOOKING;
 DROP TABLE IF EXISTS CARS;
 DROP TABLE IF EXISTS CUSTOMER;
 DROP TABLE IF EXISTS REVIEWS;
+SET SQL_SAFE_UPDATES = 0;
 
 CREATE TABLE AGENT
 (
@@ -15,15 +16,6 @@ agentName VARCHAR(50),
 totalClients INT DEFAULT 0
 );
 ALTER table AGENT AUTO_INCREMENT = 1;
-
-CREATE TABLE BOOKING
-(
-bookingID INT PRIMARY KEY,
-bookedCarID INT REFERENCES CARS(carID),
-rentDate date,
-dueDate date,
-overdue BOOLEAN DEFAULT FALSE
-);
 
 CREATE TABLE CARS
 (
@@ -34,51 +26,64 @@ color VARCHAR(10),
 type VARCHAR(10),
 rentPrice INT,
 rented BOOLEAN DEFAULT FALSE,
-updatedAt TIMESTAMP,
-UNIQUE KEY(carID, brand, year)
+updatedAt TIMESTAMP DEFAULT current_timestamp not null ON UPDATE current_timestamp
 );
 ALTER table CARS AUTO_INCREMENT = 101;
+
+CREATE TABLE BOOKING
+(
+bookingID INT PRIMARY KEY,
+bookedCarID INT UNIQUE KEY,
+rentDate date,
+dueDate date,
+overdue BOOLEAN DEFAULT FALSE,
+updatedAt TIMESTAMP DEFAULT current_timestamp not null ON UPDATE current_timestamp,
+FOREIGN KEY (bookedCarID) REFERENCES CARS(carID)
+);
 
 CREATE TABLE CUSTOMER
 (
 customerID INT PRIMARY KEY,
 customerName VARCHAR(50),
-assignedAgent VARCHAR(50) REFERENCES AGENTS(agentID),
-assignedCar INT REFERENCES CARS(carID)
+assignedAgentID INT,
+assignedCar INT,
+updatedAt TIMESTAMP DEFAULT current_timestamp not null ON UPDATE current_timestamp,
+FOREIGN KEY (assignedAgentID) REFERENCES AGENT(agentID),
+FOREIGN KEY (assignedCar) REFERENCES CARS(carID)
 );
 
 CREATE TABLE REVIEWS
 (
 reviewID INT PRIMARY KEY,
 stars INT CHECK (stars >= 1 AND stars <= 5),
-reviewedAgentID INT REFERENCES AGENTS(agentID),
-reviewer INT REFERENCES CUSTOMER(customerID),
-updatedAt TIMESTAMP,
-UNIQUE KEY(reviewer, reviewedAgentID)
-);
-
-CREATE TABLE ARCHIVECARS
-(
-carID INT PRIMARY KEY,
-brand VARCHAR(50),
-year INT,
-color VARCHAR(10),
-type VARCHAR(10),
-rentPrice INT,
-rented BOOLEAN,
-timeStamp DATE
-);
-
-CREATE TABLE ARCHIVEREVIEWS
-(
-reviewID INT PRIMARY KEY,
-stars INT,
 reviewedAgentID INT,
 reviewer INT,
-timeStamp DATE
+UNIQUE KEY(reviewer, reviewedAgentID),
+FOREIGN KEY (reviewedAgentID) REFERENCES AGENT(agentID),
+FOREIGN KEY (reviewer) REFERENCES CUSTOMER(customerID)
+);
+
+CREATE TABLE ARCHIVE_CUSTOMER
+(
+customerID INT PRIMARY KEY,
+customerName VARCHAR(50),
+assignedAgentID INT,
+assignedCar INT,
+updatedAt TIMESTAMP
+);
+
+CREATE TABLE ARCHIVE_BOOKING
+(
+bookingID INT PRIMARY KEY,
+bookedCarID INT UNIQUE KEY,
+rentDate date,
+dueDate date,
+overdue BOOLEAN,
+updatedAt TIMESTAMP
 );
 
 /* STORED PROCEDURES */
+/* Getting Car IDs by Brand */
 DROP PROCEDURE IF EXISTS getCarIDsByBrand;
 DELIMITER //
 CREATE PROCEDURE getCarIDsByBrand (IN carBrand VARCHAR(50))
@@ -88,50 +93,119 @@ WHERE brand = carBrand;
 END //
 DELIMITER ;
 
+/* Archiving Customer */
+DROP PROCEDURE IF EXISTS archiveCustomer;
+DELIMITER //
+CREATE PROCEDURE archiveCustomer (IN cutoff TIMESTAMP)
+BEGIN
+	INSERT INTO ARCHIVE_CUSTOMER
+    SELECT * FROM CUSTOMER WHERE cutoff < CUSTOMER.updatedAt;
+    
+    UPDATE AGENT SET totalClients = totalClients - 1 WHERE agentID IN (SELECT assignedAgentID FROM CUSTOMER WHERE cutoff < CUSTOMER.updatedAt);
+    
+    SET FOREIGN_KEY_CHECKS = 0;
+    DELETE FROM CUSTOMER WHERE cutoff < CUSTOMER.updatedAt;
+    SET FOREIGN_KEY_CHECKS = 1;
+END //
+DELIMITER ;
+
+/* Archiving Booking */
+DROP PROCEDURE IF EXISTS archiveBooking;
+DELIMITER //
+CREATE PROCEDURE archiveBooking (IN cutoff TIMESTAMP)
+BEGIN
+	INSERT INTO ARCHIVE_BOOKING
+    SELECT * FROM BOOKING WHERE cutoff < BOOKING.updatedAt;
+    
+    DELETE FROM BOOKING WHERE cutoff < BOOKING.updatedAt;
+END //
+DELIMITER ;
+
 /* TRIGGERS */
-/* Expensive Cars */
-/*
-DROP TRIGGER expensiveCars;
-CREATE TRIGGER expensiveCars
-BEFORE INSERT ON Car
+/* Update Total Clients of Agent When Inserting */
+DROP TRIGGER IF EXISTS increaseAgentClients;
+DELIMITER //
+CREATE TRIGGER increaseAgentClients
+AFTER INSERT ON CUSTOMER
 FOR EACH ROW
 BEGIN
-IF RentPrice = 5000
-PRINT 'THIS IS AN EXPENSIVE CAR'
+	IF NEW.assignedAgentID IS NOT NULL THEN
+	UPDATE AGENT SET totalClients = totalClients + 1 WHERE agentID = NEW.assignedAgentID;
+    END IF;
 END;
-*/
-/* Rental Period Done */ /*
-DROP TRIGGER rentalDone;
-CREATE TRIGGER RentalDone
-BEFORE DELETE ON Customer, Booking
+//
+DELIMITER ;
+
+/* Update Total Clients of Agent After Switching */
+DROP TRIGGER IF EXISTS switchAgents;
+DELIMITER //
+CREATE TRIGGER switchAgents
+AFTER UPDATE ON CUSTOMER
 FOR EACH ROW
 BEGIN
-IF dueDate = ? AND Overdue = 0;
-DELETE FROM Customer WHERE CustomerID = ?;
-END;*/
+	IF OLD.assignedAgentID <> NEW.assignedAgentID THEN
+	UPDATE AGENT SET totalClients = totalClients - 1 WHERE agentID = OLD.assignedAgentID;
+    UPDATE AGENT SET totalClients = totalClients + 1 WHERE agentID = NEW.assignedAgentID;
+    END IF;
+END;
+//
+DELIMITER ;
 
-insert into AGENT values (1, 'Charles', 0);
-insert into AGENT values (2, 'Alex', 0);
-insert into AGENT values (3, 'Jung', 0);
-insert into AGENT values (4, 'Janet', 0);
-insert into AGENT values (5, 'Gerald', 0);
+/* Update rent status of Car */
+DROP TRIGGER IF EXISTS updateRentStatus;
+DELIMITER //
+CREATE TRIGGER updateRentStatus
+AFTER INSERT ON CUSTOMER
+FOR EACH ROW
+BEGIN
+	IF NEW.assignedCar IS NOT NULL THEN
+	UPDATE CARS SET rented = TRUE WHERE carID = NEW.assignedCar;
+    END IF;
+END;
+//
+DELIMITER ;
 
-insert into BOOKING values (10, 101, '2021-10-01', '2021-11-01', 0);
-insert into BOOKING values (11, 103, '2021-11-02', '2021-12-02', 0);
-insert into BOOKING values (12, 105, '2021-11-15', '2021-11-30', 0);
+/* Booking Period Too Long, Limit to 30 days */
+DROP TRIGGER IF EXISTS shortenBookingPeriod;
+DELIMITER //
+CREATE TRIGGER shortenBookingPeriod
+BEFORE INSERT ON BOOKING
+FOR EACH ROW
+BEGIN
+	IF NEW.dueDate - NEW.rentDate > 30 THEN
+    SET NEW.dueDate = date_add(NEW.rentDate, INTERVAL 30 DAY);
+    END IF;
+END;
+//
+DELIMITER ;
 
-insert into CARS values (101, 'Toyota', 2018, 'red', 'hybrid', 30, 1);
-insert into CARS values (102, 'Toyota', 2020, 'green', 'gas', 20, 1);
-insert into CARS values (103, 'Chevrolet', 2021, 'yellow', 'gas', 40, 1);
-insert into CARS values (103, 'Tesla', 2016, 'white', 'electronic', 50, 1);
-insert into CARS values (103, 'Lexus', 2019, 'black', 'hybrid', 40, 1);
+/* Populate AGENT */
+insert into AGENT(agentName, totalClients) values ('Charles', 0);
+insert into AGENT(agentName, totalClients) values ('Alex', 0);
+insert into AGENT(agentName, totalClients) values ('Jung', 0);
+insert into AGENT(agentName, totalClients) values ('Janet', 0);
+insert into AGENT(agentName, totalClients) values ('Gerald', 0);
 
-insert into CUSTOMER values (1000, 'Dan', 'Jung', 101);
-insert into CUSTOMER values (1001, 'Nancy', 'Charles', 103);
-insert into CUSTOMER values (1002, 'John', 'Alex', 105);
+/* Populate CARS */
+insert into CARS(brand, year, color, type, rentPrice) values ('Toyota', 2018, 'red', 'hybrid', 30);
+insert into CARS(brand, year, color, type, rentPrice) values ('Toyota', 2020, 'green', 'gas', 20);
+insert into CARS(brand, year, color, type, rentPrice) values ('Chevrolet', 2021, 'yellow', 'gas', 40);
+insert into CARS(brand, year, color, type, rentPrice) values ('Tesla', 2016, 'white', 'electronic', 50);
+insert into CARS(brand, year, color, type, rentPrice) values ('Lexus', 2019, 'black', 'hybrid', 40);
 
-insert into REVIEWS values (1, 3, 3, 1000);
-insert into REVIEWS values (2, 5, 1, 1001);
-insert into REVIEWS values (3, 1, 5, 1001);
-insert into REVIEWS values (4, 4, 2, 1002);
+/* Populate BOOKING */
+insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (10, 101, '2021-10-01', '2021-12-02');
+insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (11, 103, '2021-11-02', '2021-12-02');
+insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (12, 105, '2021-11-15', '2021-11-30');
+insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (13, 104, '2021-02-01', '2021-11-30');
 
+/* Populate CUSTOMER */
+insert into CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) values (1000, 'Dan', 3, 101);
+insert into CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) values (1001, 'Nancy', 1, 103);
+insert into CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) values (1002, 'John', 2, 105);
+
+/* Populate REVIEWS */
+insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (1, 3, 3, 1000);
+insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (2, 5, 1, 1001);
+insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (3, 1, 5, 1001);
+insert into REVIEWS(reviewID, stars, reviewedAgentID, reviewer) values (4, 4, 2, 1002);
