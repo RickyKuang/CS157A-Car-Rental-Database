@@ -1,5 +1,5 @@
 import java.awt.EventQueue;
-
+import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
@@ -7,11 +7,15 @@ import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UserReview {
 
 	JFrame frmCarRentals;
 	private JTextField nameTextField;
+	private JTextField agentTextField;
+	private JTextField starTextField;
 
 	/**
 	 * Launch the application.
@@ -40,6 +44,7 @@ public class UserReview {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+
 		frmCarRentals = new JFrame();
 		frmCarRentals.setBounds(100, 100, 450, 300);
 		frmCarRentals.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,32 +55,21 @@ public class UserReview {
 		ratingLabel.setBounds(170, 23, 70, 39);
 		frmCarRentals.getContentPane().add(ratingLabel);
 		
-		JRadioButton oneButton = new JRadioButton("1");
-		oneButton.setHorizontalAlignment(SwingConstants.CENTER);
-		oneButton.setBounds(26, 69, 70, 23);
-		frmCarRentals.getContentPane().add(oneButton);
-		
-		JRadioButton twoButton = new JRadioButton("2");
-		twoButton.setHorizontalAlignment(SwingConstants.CENTER);
-		twoButton.setBounds(98, 69, 70, 23);
-		frmCarRentals.getContentPane().add(twoButton);
-		
-		JRadioButton threeButton = new JRadioButton("3");
-		threeButton.setHorizontalAlignment(SwingConstants.CENTER);
-		threeButton.setBounds(170, 69, 70, 23);
-		frmCarRentals.getContentPane().add(threeButton);
-		
-		JRadioButton fourButton = new JRadioButton("4");
-		fourButton.setHorizontalAlignment(SwingConstants.CENTER);
-		fourButton.setBounds(245, 69, 70, 23);
-		frmCarRentals.getContentPane().add(fourButton);
-		
-		JRadioButton fiveButton = new JRadioButton("5");
-		fiveButton.setHorizontalAlignment(SwingConstants.CENTER);
-		fiveButton.setBounds(317, 69, 70, 23);
-		frmCarRentals.getContentPane().add(fiveButton);
-		
 		JButton submitButton = new JButton("Submit");
+		submitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection con;
+				try {
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+					Statement stmt = con.createStatement();
+					String sql = "INSERT INTO REVIEWS (stars, reviewedAgentID, reviewer) VALUES ('" + starTextField.getText() + "', '" + agentTextField.getText() + "', " + nameTextField.getText() + ")";
+					stmt.executeUpdate(sql);
+					System.out.println("done");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		submitButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		submitButton.setBounds(164, 167, 89, 23);
 		frmCarRentals.getContentPane().add(submitButton);
@@ -88,5 +82,23 @@ public class UserReview {
 		nameTextField.setBounds(209, 119, 86, 20);
 		frmCarRentals.getContentPane().add(nameTextField);
 		nameTextField.setColumns(10);
+		
+		JLabel agentLabel = new JLabel("Enter Agent:");
+		agentLabel.setBounds(119, 95, 70, 14);
+		frmCarRentals.getContentPane().add(agentLabel);
+		
+		JLabel starLabel = new JLabel("Enter Stars:");
+		starLabel.setBounds(119, 70, 70, 14);
+		frmCarRentals.getContentPane().add(starLabel);
+		
+		agentTextField = new JTextField();
+		agentTextField.setBounds(209, 92, 86, 20);
+		frmCarRentals.getContentPane().add(agentTextField);
+		agentTextField.setColumns(10);
+		
+		starTextField = new JTextField();
+		starTextField.setBounds(209, 67, 86, 20);
+		frmCarRentals.getContentPane().add(starTextField);
+		starTextField.setColumns(10);
 	}
 }

@@ -1,10 +1,12 @@
 import java.awt.EventQueue;
-
+import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UserBook {
 
@@ -73,6 +75,24 @@ public class UserBook {
 		carTextField.setColumns(10);
 		
 		JButton bookButton = new JButton("Book");
+		bookButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection con;
+				try {
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+					Statement stmt = con.createStatement();
+					String sql = "INSERT INTO CUSTOMER(customerName, assignedAgent, assignedCar) VALUES ('" + nameTextField.getText() + "', '" + agentTextField.getText() + "', " + carTextField.getText() + ")";
+					stmt.executeUpdate(sql);
+					Date date = new Date(1000);
+					java.sql.Date sqldate = new java.sql.Date(date.getTime());
+					String sql2 = "INSERT INTO BOOKING(bookedCarID, rentDate, dueDate, overdue) VALUES ('" + carTextField.getText() + "', '" + sqldate + "', '" + sqldate + "', 1)";
+					stmt.executeUpdate(sql2);
+					System.out.println("done");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		bookButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		bookButton.setBounds(159, 181, 89, 23);
 		frmCarRentals.getContentPane().add(bookButton);

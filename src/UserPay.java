@@ -1,10 +1,12 @@
 import java.awt.EventQueue;
 import java.awt.Font;
-
+import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UserPay {
 
@@ -73,6 +75,22 @@ public class UserPay {
 		carTextField.setColumns(10);
 		
 		JButton payButton = new JButton("Pay");
+		payButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection con;
+				try {
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+					Statement stmt = con.createStatement();
+					String sql = "DELETE FROM CUSTOMER WHERE customerName = '" + nameTextField.getText() + "' AND assignedAgent =  '" + agentTextField.getText() + "' AND assignedCar = " + carTextField.getText();
+					stmt.executeUpdate(sql);
+					String sql2 = "DELETE FROM BOOKING WHERE bookedCarID =  " + carTextField.getText();
+					stmt.executeUpdate(sql2);
+					System.out.println("done");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		payButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		payButton.setBounds(159, 181, 89, 23);
 		frmCarRentals.getContentPane().add(payButton);
