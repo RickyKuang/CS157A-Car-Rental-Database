@@ -14,6 +14,7 @@ public class UserPay {
 	private JTextField idTextField;
 	private JTextField agentTextField;
 	private JTextField carTextField;
+	private JLabel outputLabel;
 
 	/**
 	 * Launch the application.
@@ -47,7 +48,7 @@ public class UserPay {
 		frmCarRentals.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCarRentals.getContentPane().setLayout(null);
 		
-		JLabel idLabel = new JLabel("Enter Customer ID:");
+		JLabel idLabel = new JLabel("Enter Cust ID:");
 		idLabel.setBounds(94, 93, 113, 14);
 		frmCarRentals.getContentPane().add(idLabel);
 		
@@ -55,15 +56,6 @@ public class UserPay {
 		idTextField.setBounds(229, 90, 86, 20);
 		frmCarRentals.getContentPane().add(idTextField);
 		idTextField.setColumns(10);
-		
-		JLabel agentLabel = new JLabel("Enter Agent ID:");
-		agentLabel.setBounds(94, 118, 100, 14);
-		frmCarRentals.getContentPane().add(agentLabel);
-		
-		agentTextField = new JTextField();
-		agentTextField.setBounds(229, 115, 86, 20);
-		frmCarRentals.getContentPane().add(agentTextField);
-		agentTextField.setColumns(10);
 		
 		JLabel carLabel = new JLabel("Enter Car ID:");
 		carLabel.setBounds(94, 143, 86, 14);
@@ -74,6 +66,10 @@ public class UserPay {
 		frmCarRentals.getContentPane().add(carTextField);
 		carTextField.setColumns(10);
 		
+		JLabel outputLabel = new JLabel("Output: ");
+		outputLabel.setBounds(159, 200, 200, 50);
+		frmCarRentals.getContentPane().add(outputLabel);
+		
 		JButton payButton = new JButton("Pay");
 		payButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -81,14 +77,16 @@ public class UserPay {
 				try {
 					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 					Statement stmt = con.createStatement();
-					String sql = "UPDATE CUSTOMER SET assignedCar = NULL WHERE customerID = '" + idTextField.getText() + "' AND assignedAgentID =  " + agentTextField.getText() + " AND assignedCar = " + carTextField.getText();
+					String sql = "UPDATE CUSTOMER SET assignedCar = NULL WHERE customerID = '" + idTextField.getText() + "' AND assignedCar = " + carTextField.getText();
 					stmt.executeUpdate(sql);
 					String sql2 = "DELETE FROM BOOKING WHERE bookedCarID =  " + carTextField.getText();
 					stmt.executeUpdate(sql2);
 					String sql3 = "UPDATE CARS SET rented = 0 WHERE carID = " + carTextField.getText();
 					stmt.executeUpdate(sql3);
+					
+					outputLabel.setText("Payment Successful");
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					outputLabel.setText(e1.getLocalizedMessage());
 				}
 			}
 		});

@@ -143,15 +143,13 @@ END;
 DELIMITER ;
 
 /* Booking Period Too Long, Limit to 30 days */
-DROP TRIGGER IF EXISTS shortenBookingPeriod;
+DROP TRIGGER IF EXISTS createDueDate;
 DELIMITER //
-CREATE TRIGGER shortenBookingPeriod
+CREATE TRIGGER createDueDate
 BEFORE INSERT ON BOOKING
 FOR EACH ROW
 BEGIN
-	IF NEW.dueDate - NEW.rentDate > 30 THEN
     SET NEW.dueDate = date_add(NEW.rentDate, INTERVAL 30 DAY);
-    END IF;
 END;
 //
 DELIMITER ;
@@ -173,10 +171,9 @@ insert into CARS(brand, year, color, type, rentPrice) values ('Lexus', 2019, 'bl
 insert into CARS(brand, year, color, type, rentPrice) values ('Tesla', 2016, 'black', 'electric', 50);
 
 /* Populate BOOKING */
-insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (10, 101, '2021-10-01', '2021-12-02');
-insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (11, 103, '2021-11-02', '2021-12-02');
-insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (12, 105, '2021-11-15', '2021-11-30');
-insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (13, 104, '2021-02-01', '2021-11-30');
+insert into BOOKING(bookingID, bookedCarID, rentDate) values (10, 101, '2021-11-15');
+insert into BOOKING(bookingID, bookedCarID, rentDate) values (11, 103, '2021-11-17');
+insert into BOOKING(bookingID, bookedCarID, rentDate) values (12, 105, '2021-11-25');
 
 /* Populate CUSTOMER */
 insert into CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) values (1000, 'Dan', 3, 101);
