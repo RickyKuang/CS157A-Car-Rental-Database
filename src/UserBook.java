@@ -105,9 +105,9 @@ public class UserBook {
 			public void actionPerformed(ActionEvent e) {
 				Connection con;
 				try {
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 					Statement stmt = con.createStatement();
-					String sql = "INSERT INTO CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) VALUES (" + custIDTextField.getText() + ", '" +  nameTextField.getText() + "', '" + agentTextField.getText() + "', " + carTextField.getText() + ")";
+					String sql = "INSERT INTO CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) VALUES (" + custIDTextField.getText() + ", '" +  nameTextField.getText() + "', " + agentTextField.getText() + ", " + carTextField.getText() + ")";
 					stmt.executeUpdate(sql);
 					java.util.Date date = new java.util.Date();
 					java.sql.Date sqlDate = new Date(date.getTime());
