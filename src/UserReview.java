@@ -98,7 +98,7 @@ public class UserReview {
 			public void actionPerformed(ActionEvent e) {
 				Connection con;
 				try {
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 					Statement stmt = con.createStatement();
 					
 					String sql = "INSERT INTO REVIEWS (reviewID, stars, reviewedAgentID, reviewer) VALUES (" + reviewIDTextField.getText() + ", " + starTextField.getText() + ", " + agentTextField.getText() + ", " + nameTextField.getText() + ")";
@@ -155,7 +155,7 @@ public class UserReview {
 			public void actionPerformed(ActionEvent e) {
 				Connection con;
 				try {
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 					Statement stmt = con.createStatement();
 					
 					String sql = "UPDATE REVIEWS SET stars = " + updatedStarTextField.getText() 

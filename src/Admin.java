@@ -57,7 +57,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT carID, brand, type FROM CARS WHERE rented = 0;";
@@ -89,7 +89,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT customerID, customerName, agentID, agentName "
@@ -125,7 +125,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT agentName, stars FROM AGENT, REVIEWS "
@@ -160,7 +160,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT customerID, customerName, assignedCar FROM CUSTOMER\n"
@@ -197,7 +197,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT * FROM ARCHIVE_CUSTOMER";
@@ -230,7 +230,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT * FROM ARCHIVE_BOOKING";
@@ -302,7 +302,7 @@ public class Admin {
 						public void actionPerformed(ActionEvent e) {
 							try {
 								Class.forName("com.mysql.cj.jdbc.Driver");
-						        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+						        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 						           
 						        String sql = "{call archiveCustomer(?)}";
 						        CallableStatement cstmt = con.prepareCall(sql);
@@ -335,7 +335,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           
 			           String sql = "{call archiveBooking(?)}";
 			           CallableStatement cstmt = con.prepareCall(sql);
@@ -363,7 +363,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Class.forName("com.mysql.cj.jdbc.Driver");
-			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			        Statement stmt = con.createStatement();
 			           
 			        String sql = "SELECT brand, year, type, color, rented FROM CARS c1 "
@@ -399,7 +399,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Class.forName("com.mysql.cj.jdbc.Driver");
-			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			        Statement stmt = con.createStatement();
 					
 					String sql = "SELECT customerName, assignedAgentID FROM CUSTOMER "
@@ -431,7 +431,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Class.forName("com.mysql.cj.jdbc.Driver");
-			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			        Statement stmt = con.createStatement();
 					
 					String sql = "SELECT customerID, customerName FROM CUSTOMER "

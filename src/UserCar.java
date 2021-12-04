@@ -51,7 +51,7 @@ public class UserCar {
 	 */
 	private void initialize() {
 		frmCarRentals = new JFrame();
-		frmCarRentals.setBounds(100, 100, 450, 300);
+		frmCarRentals.setBounds(100, 100, 450, 350);
 		frmCarRentals.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCarRentals.getContentPane().setLayout(null);
 
@@ -60,7 +60,7 @@ public class UserCar {
 		
 		JLabel outputLabel = new JLabel("");
 		outputLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		outputLabel.setBounds(94, 59, 245, 146);
+		outputLabel.setBounds(94, 44, 245, 222);
 		frmCarRentals.getContentPane().add(outputLabel);
 		
 		JButton submitButton = new JButton("See Car Selection");
@@ -69,7 +69,7 @@ public class UserCar {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT carId, brand, year, color, type FROM CARS";
@@ -88,7 +88,7 @@ public class UserCar {
 			       }
 		}
 		});
-		submitButton.setBounds(150, 216, 150, 23);
+		submitButton.setBounds(150, 277, 150, 23);
 		frmCarRentals.getContentPane().add(submitButton);
 		
 		JLabel carLabel = new JLabel("Cars:");
