@@ -21,7 +21,6 @@ import java.awt.Font;
 public class UserCar {
 
 	JFrame frmCarRentals;
-	private JLabel outputLabel;
 
 	/**
 	 * Launch the application.
