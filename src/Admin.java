@@ -1,24 +1,13 @@
 import java.sql.*;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.text.DateFormat;
 
 public class Admin {
 	JFrame frmCarRentals;
 	private JLabel outputLabel;
-	private JTextField archCustomerTextField;
 
 	/**
 	 * Launch the application.
@@ -91,25 +80,30 @@ public class Admin {
 		});
 		
 		/*
-		 * Check the total Number of Agents
+		 * Right Outer Join for Customers and Agent Info
 		 */
-		JButton checkTotalAgentsBtn = new JButton("Total Agents");
-		checkTotalAgentsBtn.setBounds(120, 25, 190, 35);
-		displayPanel.add(checkTotalAgentsBtn);
-		checkTotalAgentsBtn.addActionListener(new ActionListener() {
+		JButton customersAgentsBtn = new JButton("Customers and Assigned Agents");
+		customersAgentsBtn.setBounds(120, 25, 190, 35);
+		displayPanel.add(customersAgentsBtn);
+		customersAgentsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 			           Statement stmt = con.createStatement();
 			           
-			           String sql = "SELECT count(*) FROM AGENT";
+			           String sql = "SELECT customerID, customerName, agentID, agentName "
+			           		+ "FROM CUSTOMER, AGENT WHERE assignedAgentID = agentID "
+			           		+ "UNION ALL "
+			           		+ "SELECT NULL, NULL, agentID, agentName "
+			           		+ "FROM AGENT WHERE agentID NOT IN (SELECT assignedAgentID FROM CUSTOMER);";
 			           
 			           ResultSet rs = stmt.executeQuery(sql);
-			           String totalAgents = "<html>Agent Total<br>"
-			           		+ "-----------<br>";
+			           String totalAgents = "<html>Customers and Assigned Agents<br>"
+			           		+ "(customerID, customerName, agentID, agentName)<br>"
+			           		+ "--------------------<br>";
 			           while (rs.next()) {
-			        	   totalAgents += rs.getInt(1) + "<br>";
+			        	   totalAgents += rs.getInt(1) + " | " + rs.getString(2) + " | " + rs.getInt(3) + " | " + rs.getString(4) + "<br>";
 			           }
 			           outputLabel.setText(totalAgents);
 			           
@@ -131,7 +125,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT agentName, stars FROM AGENT, REVIEWS "
@@ -166,7 +160,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT customerID, customerName, assignedCar FROM CUSTOMER\n"
@@ -203,7 +197,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT * FROM ARCHIVE_CUSTOMER";
@@ -236,7 +230,7 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT * FROM ARCHIVE_BOOKING";
@@ -268,18 +262,62 @@ public class Admin {
 		archiveCustomerBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
-			           
-			           String sql = "{call archiveCustomer(?)}";
-			           CallableStatement cstmt = con.prepareCall(sql);
-			           Timestamp cutoffDate = new Timestamp(System.currentTimeMillis());
-			           cstmt.setTimestamp(1, cutoffDate);
-			           boolean hasResult = cstmt.execute();
-			           
-			           outputLabel.setText("Cutoff Date: " + cutoffDate);
-			           
-			           con.close();
+					JFrame archiveCustomer = new JFrame("Archive Customer");
+					archiveCustomer.setBounds(100, 100, 450, 100);
+					archiveCustomer.getContentPane().setLayout(new GridLayout(4,1));
+					archiveCustomer.setVisible(true);
+					
+					// Year Entry
+					JLabel yearLabel = new JLabel("Enter Year Cutoff (XXXX):");
+					yearLabel.setBounds(100, 90, 50, 14);
+					archiveCustomer.getContentPane().add(yearLabel);
+					
+					JTextField yearTextField = new JTextField();
+					yearTextField.setBounds(250, 90, 70, 20);
+					archiveCustomer.getContentPane().add(yearTextField);
+					
+					// Month Entry
+					JLabel monthLabel = new JLabel("Enter Month Cutoff (XX):");
+					monthLabel.setBounds(100, 90, 50, 14);
+					archiveCustomer.getContentPane().add(monthLabel);
+					
+					JTextField monthTextField = new JTextField();
+					monthTextField.setBounds(250, 90, 70, 20);
+					archiveCustomer.getContentPane().add(monthTextField);
+					
+					// Day Entry
+					JLabel dayLabel = new JLabel("Enter Day Cutoff (XX):");
+					dayLabel.setBounds(100, 90, 50, 14);
+					archiveCustomer.getContentPane().add(dayLabel);
+					
+					JTextField dayTextField = new JTextField();
+					dayTextField.setBounds(250, 90, 70, 20);
+					archiveCustomer.getContentPane().add(dayTextField);
+					
+					// Submit Info
+					JButton submitBtn = new JButton("Submit");
+					submitBtn.setBounds(100, 300, 150, 14);
+					archiveCustomer.getContentPane().add(submitBtn);
+					submitBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							try {
+								Class.forName("com.mysql.cj.jdbc.Driver");
+						        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+						           
+						        String sql = "{call archiveCustomer(?)}";
+						        CallableStatement cstmt = con.prepareCall(sql);
+						        
+						        Timestamp cutoffDate = new Timestamp(System.currentTimeMillis());
+						        cstmt.setTimestamp(1, cutoffDate);
+						        cstmt.execute();
+						           
+						        outputLabel.setText("Cutoff Date: " + cutoffDate);
+						        con.close();
+							} catch (Exception exception) {
+								outputLabel.setText(exception.getMessage());
+							}
+						}
+					});
 			       }
 			       catch (Exception exeption) {
 			            outputLabel.setText(exeption.getMessage());
@@ -297,13 +335,13 @@ public class Admin {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
 			           
 			           String sql = "{call archiveBooking(?)}";
 			           CallableStatement cstmt = con.prepareCall(sql);
 			           Timestamp cutoffDate = new Timestamp(System.currentTimeMillis());
 			           cstmt.setTimestamp(1, cutoffDate);
-			           boolean hasResult = cstmt.execute();
+			           cstmt.execute();
 			           
 			           outputLabel.setText("Cutoff Date: " + cutoffDate);
 			           
@@ -313,6 +351,109 @@ public class Admin {
 			            outputLabel.setText(exeption.getMessage());
 			       }
 		}
+		});
+		
+		/*
+		 * Check Users that Reviewed
+		 */
+		JButton checkMultCarsBtn = new JButton("Cars w/ >1 Colors");
+		checkMultCarsBtn.setBounds(120, 25, 190, 35);
+		displayPanel.add(checkMultCarsBtn);
+		checkMultCarsBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			        Statement stmt = con.createStatement();
+			           
+			        String sql = "SELECT brand, year, type, color, rented FROM CARS c1 "
+			        		+ "WHERE carID != ANY ( "
+			        		+ "SELECT carID FROM CARS "
+			        		+ "WHERE brand = c1.brand AND year = c1.year "
+			        		+ "AND type = c1.type);";
+			        
+			        ResultSet rs = stmt.executeQuery(sql);
+			        String multCars = "<html>Cars with >1 Colors<br>"
+			           		+ "(Brand, Year, Type, Color, Rented)<br>"
+			           		+ "--------------------------<br>";
+			        while (rs.next()) {
+			        	   multCars += rs.getString(1) + " | " + rs.getInt(2) + " | " + rs.getString(3) 
+			        	   			+ " | " + rs.getString(4) + " | " + rs.getInt(5) + "<br>";
+			        }
+			        outputLabel.setText(multCars + "</html>");
+			        
+			        con.close();
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
+		});
+		
+		/*
+		 * Intersect, Customers that Left Review for Assigned Agent
+		 */
+		JButton customerReviewAgentBtn = new JButton("Customers Review of Agent");
+		customerReviewAgentBtn.setBounds(120, 25, 190, 35);
+		displayPanel.add(customerReviewAgentBtn);
+		customerReviewAgentBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			        Statement stmt = con.createStatement();
+					
+					String sql = "SELECT customerName, assignedAgentID FROM CUSTOMER "
+							+ "WHERE (customerID, assignedAgentID) IN (SELECT reviewer, reviewedAgentID FROM REVIEWS);";
+					
+					ResultSet rs = stmt.executeQuery(sql);
+			        String custAgent = "<html>Customers Review of Agent<br>"
+			           		+ "(Customer Name, Agent Reviewed)<br>"
+			           		+ "--------------------------<br>";
+			        while (rs.next()) {
+			        	   custAgent += rs.getString(1) + " | " + rs.getInt(2) + "<br>";
+			        }
+			        outputLabel.setText(custAgent + "</html>");
+					
+					con.close();
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
+		});
+		
+		/*
+		 * Check Customers with > 1 Review
+		 */
+		JButton checkMoreThanOneBtn = new JButton("Check Users w/ Mult Ratings");
+		checkMoreThanOneBtn.setBounds(120, 25, 190, 35);
+		displayPanel.add(checkMoreThanOneBtn);
+		checkMoreThanOneBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+			        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			        Statement stmt = con.createStatement();
+					
+					String sql = "SELECT customerID, customerName FROM CUSTOMER "
+							+ "WHERE customerID IN ("
+							+ "SELECT reviewer FROM REVIEWS "
+							+ "GROUP BY reviewer "
+							+ "HAVING count(*) > 1);";
+					
+					ResultSet rs = stmt.executeQuery(sql);
+			        String moreThanOne = "<html>Customers with >1 Ratings<br>"
+			           		+ "(Customer ID, Customer Name)<br>"
+			           		+ "--------------------------<br>";
+			        while (rs.next()) {
+			        	   moreThanOne += rs.getInt(1) + " | " + rs.getString(2) + "<br>";
+			        }
+			        outputLabel.setText(moreThanOne + "</html>");
+					
+					con.close();
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
 		});
 		
 		JPanel displayOutput = new JPanel();

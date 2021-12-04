@@ -1,11 +1,6 @@
-import java.awt.EventQueue;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class User {
 
@@ -81,6 +76,27 @@ public class User {
 		});
 		payButton.setBounds(176, 127, 89, 23);
 		frmCarRentals.getContentPane().add(payButton);
+		
+		JButton carsButton = new JButton("Cars");
+		carsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				UserCar userCar = new UserCar();
+				userCar.frmCarRentals.setVisible(true);
+			}
+		});
+		carsButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		carsButton.setBounds(104, 183, 89, 23);
+		frmCarRentals.getContentPane().add(carsButton);
+		
+		JButton agentButton = new JButton("Agents");
+		agentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UserAgent userAgent = new UserAgent();
+				userAgent.frmCarRentals.setVisible(true);
+			}
+		});
+		agentButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		agentButton.setBounds(243, 183, 89, 23);
+		frmCarRentals.getContentPane().add(agentButton);
 	}
-
 }
