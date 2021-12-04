@@ -48,6 +48,255 @@ public class Admin {
 		outputLabel.setBounds(150, 100, 200, 100);
 		
 		/*
+		 * Insert new Agents
+		 */
+		JButton insertAgentBtn = new JButton("Add Agent");
+		displayPanel.add(insertAgentBtn);
+		insertAgentBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {  
+			           JFrame insertAgent = new JFrame("Insert Agent");
+						insertAgent.setBounds(100, 100, 450, 150);
+						insertAgent.getContentPane().setLayout(new GridLayout(3,1));
+						insertAgent.setVisible(true);
+						
+						// AGENT ID Entry
+						JLabel agentIDLabel = new JLabel("Enter Agent ID: ");
+						agentIDLabel.setBounds(100, 90, 50, 14);
+						insertAgent.getContentPane().add(agentIDLabel);
+						
+						JTextField agentIDTextField = new JTextField();
+						agentIDTextField.setBounds(250, 90, 70, 20);
+						insertAgent.getContentPane().add(agentIDTextField);
+						
+						// AGENT Name Entry
+						JLabel agentNameLabel = new JLabel("Enter Agent Name: ");
+						agentNameLabel.setBounds(100, 90, 50, 14);
+						insertAgent.getContentPane().add(agentNameLabel);
+						
+						JTextField agentNameTextField = new JTextField();
+						agentNameTextField.setBounds(250, 90, 70, 20);
+						insertAgent.getContentPane().add(agentNameTextField);
+						
+						// Submit Agent Button
+						JButton submitAgentBtn = new JButton("Submit");
+						submitAgentBtn.setBounds(100, 90, 50, 14);
+						insertAgent.getContentPane().add(submitAgentBtn);
+						submitAgentBtn.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								try {
+									Class.forName("com.mysql.cj.jdbc.Driver");
+							        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+							        Statement stmt = con.createStatement();
+							           
+									String sql = "INSERT INTO AGENT (agentID, agentName) VALUES (" + agentIDTextField.getText() + ", '" + agentNameTextField.getText() + "')";
+									stmt.executeUpdate(sql);
+									outputLabel.setText("Agent Inserted");
+									con.close();
+								} catch (Exception exception) {
+									outputLabel.setText(exception.getMessage());
+								}
+							}
+						});
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
+		});
+		
+		/*
+		 * Remove Agent
+		 */
+		JButton removeAgentBtn = new JButton("Remove Agent");
+		displayPanel.add(removeAgentBtn);
+		removeAgentBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					JFrame removeAgent = new JFrame("Remove Agent");
+					removeAgent.setBounds(100, 100, 450, 250);
+					removeAgent.getContentPane().setLayout(new GridLayout(7,1));
+					removeAgent.setVisible(true);
+						
+						// Car ID Entry
+						JLabel agentIDLabel = new JLabel("Enter Agent ID: ");
+						agentIDLabel.setBounds(100, 90, 50, 14);
+						removeAgent.getContentPane().add(agentIDLabel);
+						
+						JTextField agentIDTextField = new JTextField();
+						agentIDTextField.setBounds(250, 90, 70, 20);
+						removeAgent.getContentPane().add(agentIDTextField);
+						
+						JButton submitDeleteBtn = new JButton("Submit");
+						submitDeleteBtn.setBounds(100, 90, 50, 14);
+						removeAgent.getContentPane().add(submitDeleteBtn);
+						submitDeleteBtn.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								try {
+									Class.forName("com.mysql.cj.jdbc.Driver");
+							        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+							        Statement stmt = con.createStatement();
+							           
+									String sql = "DELETE FROM AGENT WHERE agentID = " + agentIDTextField.getText();
+									stmt.executeUpdate(sql);
+									
+									outputLabel.setText("Car Removed");
+									con.close();
+								} catch (Exception exception) {
+									outputLabel.setText(exception.getMessage());
+								}
+							}
+						});
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
+		});
+		
+		/*
+		 * Insert new Car
+		 */
+		JButton insertCarBtn = new JButton("Add Car");
+		displayPanel.add(insertCarBtn);
+		insertCarBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {  
+			           JFrame insertCar = new JFrame("Insert Car");
+			           insertCar.setBounds(100, 100, 450, 250);
+			           insertCar.getContentPane().setLayout(new GridLayout(7,1));
+						insertCar.setVisible(true);
+						
+						// Car ID Entry
+						JLabel carIDLabel = new JLabel("Enter Car ID: ");
+						carIDLabel.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(carIDLabel);
+						
+						JTextField carIDTextField = new JTextField();
+						carIDTextField.setBounds(250, 90, 70, 20);
+						insertCar.getContentPane().add(carIDTextField);
+						
+						// Car Brand Entry
+						JLabel brandLabel = new JLabel("Enter Brand: ");
+						brandLabel.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(brandLabel);
+						
+						JTextField brandTextField = new JTextField();
+						brandTextField.setBounds(250, 90, 70, 20);
+						insertCar.getContentPane().add(brandTextField);
+						
+						// Car Year Entry
+						JLabel yearLabel = new JLabel("Enter Year: ");
+						yearLabel.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(yearLabel);
+						
+						JTextField yearTextField = new JTextField();
+						yearTextField.setBounds(250, 90, 70, 20);
+						insertCar.getContentPane().add(yearTextField);
+						
+						// Car Color Entry
+						JLabel colorLabel = new JLabel("Enter Color: ");
+						colorLabel.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(colorLabel);
+						
+						JTextField colorTextField = new JTextField();
+						colorTextField.setBounds(250, 90, 70, 20);
+						insertCar.getContentPane().add(colorTextField);
+						
+						// Car Type Entry
+						JLabel typeLabel = new JLabel("Enter Type: ");
+						typeLabel.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(typeLabel);
+						
+						JTextField typeTextField = new JTextField();
+						typeTextField.setBounds(250, 90, 70, 20);
+						insertCar.getContentPane().add(typeTextField);
+						
+						// Car Rent Entry
+						JLabel rentLabel = new JLabel("Enter Rent: ");
+						rentLabel.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(rentLabel);
+						
+						JTextField rentTextField = new JTextField();
+						rentTextField.setBounds(250, 90, 70, 20);
+						insertCar.getContentPane().add(rentTextField);
+						
+						// Submit Agent Button
+						JButton submitAgentBtn = new JButton("Submit");
+						submitAgentBtn.setBounds(100, 90, 50, 14);
+						insertCar.getContentPane().add(submitAgentBtn);
+						submitAgentBtn.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								try {
+									Class.forName("com.mysql.cj.jdbc.Driver");
+							        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+							        Statement stmt = con.createStatement();
+							           
+									String sql = "INSERT INTO CARS (carID, brand, year, color, type, rentPrice) VALUES (" 
+												+ carIDTextField.getText() + ", '" + brandTextField.getText() + "', "
+												+ yearTextField.getText() + ", '" + colorTextField.getText() + "', '"
+												+ typeTextField.getText() + "', " + rentTextField.getText() + ")";
+									stmt.executeUpdate(sql);
+									outputLabel.setText("Car Inserted");
+									con.close();
+								} catch (Exception exception) {
+									outputLabel.setText(exception.getMessage());
+								}
+							}
+						});
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
+		});
+		
+		/*
+		 * Remove Car
+		 */
+		JButton removeCarBtn = new JButton("Remove Car");
+		displayPanel.add(removeCarBtn);
+		removeCarBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					JFrame removeCar = new JFrame("Remove Car");
+					removeCar.setBounds(100, 100, 450, 250);
+					removeCar.getContentPane().setLayout(new GridLayout(7,1));
+					removeCar.setVisible(true);
+						
+						// Car ID Entry
+						JLabel carIDLabel = new JLabel("Enter Car ID: ");
+						carIDLabel.setBounds(100, 90, 50, 14);
+						removeCar.getContentPane().add(carIDLabel);
+						
+						JTextField carIDTextField = new JTextField();
+						carIDTextField.setBounds(250, 90, 70, 20);
+						removeCar.getContentPane().add(carIDTextField);
+						
+						JButton submitDeleteBtn = new JButton("Submit");
+						submitDeleteBtn.setBounds(100, 90, 50, 14);
+						removeCar.getContentPane().add(submitDeleteBtn);
+						submitDeleteBtn.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								try {
+									Class.forName("com.mysql.cj.jdbc.Driver");
+							        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+							        Statement stmt = con.createStatement();
+							           
+									String sql = "DELETE FROM CARS WHERE carID = " + carIDTextField.getText();
+									stmt.executeUpdate(sql);
+									
+									outputLabel.setText("Car Removed");
+									con.close();
+								} catch (Exception exception) {
+									outputLabel.setText(exception.getMessage());
+								}
+							}
+						});
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getMessage());
+				}
+			}
+		});
+		
+		/*
 		 * Check Availability of Cars
 		 */
 		JButton checkCarsAvailBtn = new JButton("Available Cars");
@@ -262,62 +511,18 @@ public class Admin {
 		archiveCustomerBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					JFrame archiveCustomer = new JFrame("Archive Customer");
-					archiveCustomer.setBounds(100, 100, 450, 100);
-					archiveCustomer.getContentPane().setLayout(new GridLayout(4,1));
-					archiveCustomer.setVisible(true);
-					
-					// Year Entry
-					JLabel yearLabel = new JLabel("Enter Year Cutoff (XXXX):");
-					yearLabel.setBounds(100, 90, 50, 14);
-					archiveCustomer.getContentPane().add(yearLabel);
-					
-					JTextField yearTextField = new JTextField();
-					yearTextField.setBounds(250, 90, 70, 20);
-					archiveCustomer.getContentPane().add(yearTextField);
-					
-					// Month Entry
-					JLabel monthLabel = new JLabel("Enter Month Cutoff (XX):");
-					monthLabel.setBounds(100, 90, 50, 14);
-					archiveCustomer.getContentPane().add(monthLabel);
-					
-					JTextField monthTextField = new JTextField();
-					monthTextField.setBounds(250, 90, 70, 20);
-					archiveCustomer.getContentPane().add(monthTextField);
-					
-					// Day Entry
-					JLabel dayLabel = new JLabel("Enter Day Cutoff (XX):");
-					dayLabel.setBounds(100, 90, 50, 14);
-					archiveCustomer.getContentPane().add(dayLabel);
-					
-					JTextField dayTextField = new JTextField();
-					dayTextField.setBounds(250, 90, 70, 20);
-					archiveCustomer.getContentPane().add(dayTextField);
-					
-					// Submit Info
-					JButton submitBtn = new JButton("Submit");
-					submitBtn.setBounds(100, 300, 150, 14);
-					archiveCustomer.getContentPane().add(submitBtn);
-					submitBtn.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							try {
-								Class.forName("com.mysql.cj.jdbc.Driver");
-						        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
-						           
-						        String sql = "{call archiveCustomer(?)}";
-						        CallableStatement cstmt = con.prepareCall(sql);
-						        
-						        Timestamp cutoffDate = new Timestamp(System.currentTimeMillis());
-						        cstmt.setTimestamp(1, cutoffDate);
-						        cstmt.execute();
-						           
-						        outputLabel.setText("Cutoff Date: " + cutoffDate);
-						        con.close();
-							} catch (Exception exception) {
-								outputLabel.setText(exception.getMessage());
-							}
-						}
-					});
+			           Class.forName("com.mysql.cj.jdbc.Driver");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+			           
+			           String sql = "{call archiveCustomer(?)}";
+			           CallableStatement cstmt = con.prepareCall(sql);
+			           Timestamp cutoffDate = new Timestamp(System.currentTimeMillis());
+			           cstmt.setTimestamp(1, cutoffDate);
+			           cstmt.execute();
+			           
+			           outputLabel.setText("Cutoff Date: " + cutoffDate);
+			           
+			           con.close();
 			       }
 			       catch (Exception exeption) {
 			            outputLabel.setText(exeption.getMessage());
