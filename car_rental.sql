@@ -128,21 +128,6 @@ END;
 //
 DELIMITER ;
 
-/* Update Total Clients of Agent After Switching */
-DROP TRIGGER IF EXISTS switchAgents;
-DELIMITER //
-CREATE TRIGGER switchAgents
-AFTER UPDATE ON CUSTOMER
-FOR EACH ROW
-BEGIN
-	IF OLD.assignedAgentID <> NEW.assignedAgentID THEN
-	UPDATE AGENT SET totalClients = totalClients - 1 WHERE agentID = OLD.assignedAgentID;
-    UPDATE AGENT SET totalClients = totalClients + 1 WHERE agentID = NEW.assignedAgentID;
-    END IF;
-END;
-//
-DELIMITER ;
-
 /* Update rent status of Car */
 DROP TRIGGER IF EXISTS updateRentStatus;
 DELIMITER //
