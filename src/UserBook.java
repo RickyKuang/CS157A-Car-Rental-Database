@@ -111,7 +111,7 @@ public class UserBook {
 					stmt.executeUpdate(sql);
 					Date date = new Date(1000);
 					java.sql.Date sqldate = new java.sql.Date(date.getTime());
-					String sql2 = "INSERT INTO BOOKING(bookingID, bookedCarID, rentDate, dueDate) VALUES ('" + carTextField.getText() + "', '" + sqldate + "', '" + sqldate + "')";
+					String sql2 = "INSERT INTO BOOKING(bookingID, bookedCarID, rentDate, dueDate) VALUES (" + bookingTextField.getText() + ", "+ carTextField.getText() + "', '" + sqldate + "', '" + sqldate + "')";
 					stmt.executeUpdate(sql2);
 					String sql3 = "UPDATE CARS SET rented = 1 WHERE carID = " + carTextField;
 					stmt.executeUpdate(sql3);
