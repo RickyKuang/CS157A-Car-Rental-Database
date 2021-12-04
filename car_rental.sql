@@ -55,9 +55,9 @@ FOREIGN KEY (assignedCar) REFERENCES CARS(carID)
 CREATE TABLE REVIEWS
 (
 reviewID INT PRIMARY KEY,
-stars INT CHECK (stars >= 1 AND stars <= 5),
 reviewedAgentID INT,
 reviewer INT,
+stars INT CHECK (stars >= 1 AND stars <= 5),
 UNIQUE KEY(reviewer, reviewedAgentID),
 FOREIGN KEY (reviewedAgentID) REFERENCES AGENT(agentID),
 FOREIGN KEY (reviewer) REFERENCES CUSTOMER(customerID)
@@ -99,7 +99,7 @@ DELIMITER //
 CREATE PROCEDURE archiveCustomer (IN cutoff TIMESTAMP)
 BEGIN
 	INSERT INTO ARCHIVE_CUSTOMER
-    SELECT * FROM CUSTOMER WHERE cutoff < CUSTOMER.updatedAt;
+    SELECT * FROM CUSTOMER WHERE cutoff > CUSTOMER.updatedAt;
 END //
 DELIMITER ;
 
@@ -109,7 +109,7 @@ DELIMITER //
 CREATE PROCEDURE archiveBooking (IN cutoff TIMESTAMP)
 BEGIN
 	INSERT INTO ARCHIVE_BOOKING
-    SELECT * FROM BOOKING WHERE cutoff < BOOKING.updatedAt;
+    SELECT * FROM BOOKING WHERE cutoff > BOOKING.updatedAt;
 END //
 DELIMITER ;
 
@@ -172,18 +172,20 @@ END;
 DELIMITER ;
 
 /* Populate AGENT */
-insert into AGENT(agentName, totalClients) values ('Charles', 0);
-insert into AGENT(agentName, totalClients) values ('Alex', 0);
-insert into AGENT(agentName, totalClients) values ('Jung', 0);
-insert into AGENT(agentName, totalClients) values ('Janet', 0);
-insert into AGENT(agentName, totalClients) values ('Gerald', 0);
+insert into AGENT(agentName) values ('Charles');
+insert into AGENT(agentName) values ('Alex');
+insert into AGENT(agentName) values ('Jung');
+insert into AGENT(agentName) values ('Janet');
+insert into AGENT(agentName) values ('Gerald');
+insert into AGENT(agentName) values ('Nina');
 
 /* Populate CARS */
 insert into CARS(brand, year, color, type, rentPrice) values ('Toyota', 2018, 'red', 'hybrid', 30);
 insert into CARS(brand, year, color, type, rentPrice) values ('Toyota', 2020, 'green', 'gas', 20);
 insert into CARS(brand, year, color, type, rentPrice) values ('Chevrolet', 2021, 'yellow', 'gas', 40);
-insert into CARS(brand, year, color, type, rentPrice) values ('Tesla', 2016, 'white', 'electronic', 50);
+insert into CARS(brand, year, color, type, rentPrice) values ('Tesla', 2016, 'white', 'electric', 50);
 insert into CARS(brand, year, color, type, rentPrice) values ('Lexus', 2019, 'black', 'hybrid', 40);
+insert into CARS(brand, year, color, type, rentPrice) values ('Tesla', 2016, 'black', 'electric', 50);
 
 /* Populate BOOKING */
 insert into BOOKING(bookingID, bookedCarID, rentDate, dueDate) values (10, 101, '2021-10-01', '2021-12-02');

@@ -7,7 +7,7 @@ public class App {
            Statement stmt = con.createStatement();
            System.out.println("Connected");
            String sql = "INSERT INTO Reviews(reviewID, stars) VALUES (20, 4)";
-            stmt.executeUpdate(sql);
+           stmt.executeUpdate(sql);
            con.close();
        }
        catch (Exception e) {

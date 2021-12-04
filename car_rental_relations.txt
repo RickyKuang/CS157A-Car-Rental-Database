@@ -72,14 +72,13 @@ Relation: BCNF
 
 -----------------------------------------------------------------------------------------------
 
-CARS(carID, brand, year, color, type, rentPrice, rented, updatedAt)
+CARS(carID, brand, year, color, type, rentPrice, rented)
 
 Functional Dependencies:
 	carID, brand, year -> color
 	carID, brand, year -> type
 	carID, brand, year, type -> rentPrice
 	carID -> rented
-	carID, rented -> updatedAt
 
 Closures:
 {carID}+ = {carID, rented, updatedAt}
@@ -89,21 +88,19 @@ Closures:
 {type}+ = {type}
 {rentPrice}+ = {rentPrice}
 {rented}+ = {rented}
-{updatedAt}+ = {updatedAt}
 
-{carID, brand}+ = {carID, brand, rented, updatedAt}
-{carID, year}+ = {carID, year, rented, updatedAt}
-{carID, color}+ = {carID, color, rented, updatedAt}
-{carID, type}+ = {carID, type, rented, updatedAt}
-{carID, rentPrice}+ = {carID, rentPrice, rented, updatedAt}
-{carID, rented}+ = {carID, rented, updatedAt}
+{carID, brand}+ = {carID, brand, rented}
+{carID, year}+ = {carID, year, rented}
+{carID, color}+ = {carID, color, rented}
+{carID, type}+ = {carID, type, rented}
+{carID, rentPrice}+ = {carID, rentPrice, rented}
+{carID, rented}+ = {carID, rented}
 
-{carID, brand, year}+ = {carID, brand, year, color, type, rentPrice, rented, updatedAt} KEY
-{carID, brand, color}+ = {carID, brand, color, rented, updatedAt}
-{carID, brand, type}+ = {carID, brand, type, rented, updatedAt}
-{carID, brand, rentPrice}+ = {carID, brand, rentPrice, rented, updatedAt}
-{carID, brand, rented}+ = {carID, brand, rented, updatedAt}
-{carID, brand, updatedAt}+ = {carID, brand, updatedAt, rented}
+{carID, brand, year}+ = {carID, brand, year, color, type, rentPrice, rented} KEY
+{carID, brand, color}+ = {carID, brand, color, rented}
+{carID, brand, type}+ = {carID, brand, type, rented}
+{carID, brand, rentPrice}+ = {carID, brand, rentPrice, rented}
+{carID, brand, rented}+ = {carID, brand, rented}
 {brand, year, color}+ = trivial
 {brand, year, type}+ = trivial
 {brand, year, rentPrice}+ = trivial
@@ -116,15 +113,15 @@ Relation Type: 3NF
 
 -----------------------------------------------------------------------------------------------
 
-CUSTOMER(customerID, customerName, assignedAgent, assignedCar)
+CUSTOMER(customerID, customerName, assignedAgentID, assignedCar)
 
 Functional Dependencies:
 	customerID -> customerName
-	customerID -> assignedAgent
+	customerID -> assignedAgentID
 	customerID, customerName -> assignedCar
 
 Closures:
-{customerID}+ = {customerID, customerName, assignedAgent, assignedCar} KEY
+{customerID}+ = {customerID, customerName, assignedAgentID, assignedCar} KEY
 {customerName}+ = {customerName}
 {assignedAgent}+ = {assignedAgent}
 {assignedCar}+ = {assignedCar}
@@ -146,44 +143,32 @@ Relation Type: BCNF
 
 -----------------------------------------------------------------------------------------------
 
-REVIEWS(reviewID, stars, reviewedAgentID, reviewer, updatedAt)
+REVIEWS(reviewID, stars, reviewedAgentID, reviewer)
 
 Functional Dependencies:
 	reviewID -> reviewer
-	reviewID -> updatedAt
 	reviewer -> reviewedAgentID
 	reviewer, reviewedAgentID -> stars
 	reviewer, reviewedAgentID -> reviewID
 
 Closures:
-{reviewID}+ = {reviewID, reviewer, updatedAt, reviewedAgentID, stars} KEY
+{reviewID}+ = {reviewID, reviewer, reviewedAgentID, stars} KEY
 {stars}+ = {stars}
 {reviewedAgentID}+ = {reviewedAgentID}
 {reviewer}+ = {reviewer, reviewedAGentID}
-{updatedAt}+ = {updatedAt}
 
 {reviewID, stars}+ = reviewID is key
 {reviewID, reviewedAgentID}+ = reviewID is key
 {reviewID, reviewer}+ = reviewID is key
-{reviewID, updatedAt}+ = reviewID is key
 {stars, reviewedAgentID}+ = trivial
 {stars, reviewer}+ = trivial
-{stars, updatedAt}+ = trivial
-{reviewedAgentID, reviewer}+ = {reviewer, reviewedAGentID, stars, reviewID, updatedAt} KEY
-{reviewedAgentID, updatedAt}+ = trivial
-{reviewer, updatedAt}+ = {reviewer, updatedAt, reviewedAgentID, stars, reviewID}
+{reviewedAgentID, reviewer}+ = {reviewer, reviewedAGentID, stars, reviewID} KEY
 
 {reviewID, stars, reviewedAgentID}+ = reviewID is key
 {reviewID, stars, reviewer}+ = reviewID is key
-{reviewID, stars, updatedAt}+ = reviewID is key
 {stars, reviewedAgentID, reviewer}+ = (reviewer, reviewedAgentID) is key
-{stars, reviewedAgentID, updatedAt}+ = trivial
-{reviewedAgentID, reviewer, updatedAt}+ = (reviewer, reviewedAgentID) is key
 
-{reviewID, stars, reviewedAgentID, reviewer}+ = reviewID and (reviewedAgentID, reviewer) is key
-{reviewID, reviewedAgentID, reviewer, updatedAt}+ = reviewID and (reviewedAgentID, reviewer) is key
-
-{reviewID, reviewer, updatedAt, reviewedAgentID, stars} = trivial
+{reviewID, stars, reviewedAgentID, reviewer}+ = trivial
 
 KEY(s): reviewID, (reviewer, reviewedAgentID)
 
