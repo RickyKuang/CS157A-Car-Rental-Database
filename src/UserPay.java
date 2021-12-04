@@ -48,29 +48,29 @@ public class UserPay {
 		frmCarRentals.getContentPane().setLayout(null);
 		
 		JLabel idLabel = new JLabel("Enter Customer ID:");
-		idLabel.setBounds(106, 93, 77, 14);
+		idLabel.setBounds(94, 93, 113, 14);
 		frmCarRentals.getContentPane().add(idLabel);
 		
 		idTextField = new JTextField();
-		idTextField.setBounds(193, 90, 86, 20);
+		idTextField.setBounds(229, 90, 86, 20);
 		frmCarRentals.getContentPane().add(idTextField);
 		idTextField.setColumns(10);
 		
 		JLabel agentLabel = new JLabel("Enter Agent ID:");
-		agentLabel.setBounds(106, 118, 77, 14);
+		agentLabel.setBounds(94, 118, 100, 14);
 		frmCarRentals.getContentPane().add(agentLabel);
 		
 		agentTextField = new JTextField();
-		agentTextField.setBounds(193, 115, 86, 20);
+		agentTextField.setBounds(229, 115, 86, 20);
 		frmCarRentals.getContentPane().add(agentTextField);
 		agentTextField.setColumns(10);
 		
 		JLabel carLabel = new JLabel("Enter Car ID:");
-		carLabel.setBounds(106, 143, 65, 14);
+		carLabel.setBounds(94, 143, 86, 14);
 		frmCarRentals.getContentPane().add(carLabel);
 		
 		carTextField = new JTextField();
-		carTextField.setBounds(193, 140, 86, 20);
+		carTextField.setBounds(229, 140, 86, 20);
 		frmCarRentals.getContentPane().add(carTextField);
 		carTextField.setColumns(10);
 		
@@ -79,7 +79,7 @@ public class UserPay {
 			public void actionPerformed(ActionEvent e) {
 				Connection con;
 				try {
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 					Statement stmt = con.createStatement();
 					String sql = "UPDATE CUSTOMER SET assignedCar = NULL WHERE customerID = '" + idTextField.getText() + "' AND assignedAgentID =  " + agentTextField.getText() + " AND assignedCar = " + carTextField.getText();
 					stmt.executeUpdate(sql);
