@@ -105,13 +105,14 @@ public class UserBook {
 			public void actionPerformed(ActionEvent e) {
 				Connection con;
 				try {
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 					Statement stmt = con.createStatement();
 					String sql = "INSERT INTO CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) VALUES (" + custIDTextField.getText() + ", '" +  nameTextField.getText() + "', '" + agentTextField.getText() + "', " + carTextField.getText() + ")";
 					stmt.executeUpdate(sql);
-					Date date = new Date(1000);
-					java.sql.Date sqldate = new java.sql.Date(date.getTime());
-					String sql2 = "INSERT INTO BOOKING(bookingID, bookedCarID, rentDate, dueDate) VALUES (" + bookingTextField.getText() + ", "+ carTextField.getText() + "', '" + sqldate + "', '" + sqldate + "')";
+					java.util.Date date = new java.util.Date();
+					java.sql.Date sqlDate = new Date(date.getTime());
+					java.sql.Date sqlDate2 = new Date(date.getTime());
+					String sql2 = "INSERT INTO BOOKING(bookingID, bookedCarID, rentDate, dueDate, overdue) VALUES (" + bookingTextField.getText() + ", "+ carTextField.getText() + ", '" + sqlDate + "', '" + sqlDate2 + "', 0)";
 					stmt.executeUpdate(sql2);
 					String sql3 = "UPDATE CARS SET rented = 1 WHERE carID = " + carTextField;
 					stmt.executeUpdate(sql3);

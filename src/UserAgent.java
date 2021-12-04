@@ -39,7 +39,7 @@ public class UserAgent {
 	 */
 	private void initialize() {
 		frmCarRentals = new JFrame();
-		frmCarRentals.setBounds(100, 100, 450, 300);
+		frmCarRentals.setBounds(100, 100, 450, 375);
 		frmCarRentals.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCarRentals.getContentPane().setLayout(null);
 
@@ -62,7 +62,7 @@ public class UserAgent {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT agentName, agentID FROM AGENT";
@@ -82,7 +82,7 @@ public class UserAgent {
 			       }
 		}
 		});
-		submitButton.setBounds(145, 200, 150, 23);
+		submitButton.setBounds(145, 277, 150, 23);
 		frmCarRentals.getContentPane().add(submitButton);
 		
 		JButton checkAvgAgentBtn = new JButton("Check Agent Avg Ratings");
@@ -91,7 +91,7 @@ public class UserAgent {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           String sql = "SELECT agentName, average_rating.avgStars "
@@ -114,7 +114,7 @@ public class UserAgent {
 		}
 		});
 		
-		checkAvgAgentBtn.setBounds(145, 225, 150, 23);
+		checkAvgAgentBtn.setBounds(145, 302, 150, 23);
 		frmCarRentals.getContentPane().add(checkAvgAgentBtn);
 	}
 

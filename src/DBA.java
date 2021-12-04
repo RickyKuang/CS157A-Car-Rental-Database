@@ -83,7 +83,7 @@ public class DBA {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           System.out.println("Connected");
@@ -117,7 +117,7 @@ public class DBA {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			           Class.forName("com.mysql.cj.jdbc.Driver");
-			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+			           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 			           Statement stmt = con.createStatement();
 			           
 			           System.out.println("Connected");
