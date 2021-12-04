@@ -105,7 +105,7 @@ public class UserBook {
 			public void actionPerformed(ActionEvent e) {
 				Connection con;
 				try {
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "RK10mysqlroot!");
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
 					Statement stmt = con.createStatement();
 					String sql = "INSERT INTO CUSTOMER(customerID, customerName, assignedAgentID, assignedCar) VALUES (" + custIDTextField.getText() + ", '" +  nameTextField.getText() + "', " + agentTextField.getText() + ", " + carTextField.getText() + ")";
 					stmt.executeUpdate(sql);
@@ -114,7 +114,7 @@ public class UserBook {
 					java.sql.Date sqlDate2 = new Date(date.getTime());
 					String sql2 = "INSERT INTO BOOKING(bookingID, bookedCarID, rentDate, dueDate, overdue) VALUES (" + bookingTextField.getText() + ", "+ carTextField.getText() + ", '" + sqlDate + "', '" + sqlDate2 + "', 0)";
 					stmt.executeUpdate(sql2);
-					String sql3 = "UPDATE CARS SET rented = 1 WHERE carID = " + carTextField;
+					String sql3 = "UPDATE CARS SET rented = 1 WHERE carID = " + carTextField.getText();
 					stmt.executeUpdate(sql3);
 					
 					outputLabel.setText("Thank you for Booking");
@@ -124,8 +124,39 @@ public class UserBook {
 			}
 		});
 		bookButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		bookButton.setBounds(159, 240, 89, 23);
+		bookButton.setBounds(100, 240, 89, 23);
 		frmCarRentals.getContentPane().add(bookButton);
+		
+		JButton bookAgainBtn = new JButton("Returning Cust. Book");
+		bookAgainBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CAR_RENTAL", "root", "password");
+					Statement stmt = con.createStatement();
+					
+					// assign customer car
+					String sql = "UPDATE CUSTOMER SET assignedCar = " + carTextField.getText() + " WHERE customerID = " + custIDTextField.getText();
+					stmt.execute(sql);
+					
+					// create booking
+					java.util.Date date = new java.util.Date();
+					java.sql.Date sqlDate = new Date(date.getTime());
+					sql = "INSERT INTO BOOKING(bookingID, bookedCarID, rentDate) VALUES (" + bookingTextField.getText() + ", " + carTextField.getText() + ", '" + sqlDate + "')";
+					stmt.executeUpdate(sql);
+					
+					// update CAR rent status
+					sql = "UPDATE CARS SET rented = 1 WHERE carID = " + carTextField.getText();
+					stmt.executeUpdate(sql);
+					
+					outputLabel.setText("Thank you for Booking");
+				} catch (Exception exception) {
+					outputLabel.setText(exception.getLocalizedMessage());
+				}
+			}
+		});
+		bookAgainBtn.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		bookAgainBtn.setBounds(200, 240, 150, 23);
+		frmCarRentals.getContentPane().add(bookAgainBtn);
 		
 		outputLabel = new JLabel("Output:");
 		outputLabel.setBounds(100, 270, 400, 25);

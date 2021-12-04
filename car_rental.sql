@@ -143,9 +143,9 @@ END;
 DELIMITER ;
 
 /* Booking Period Too Long, Limit to 30 days */
-DROP TRIGGER IF EXISTS shortenBookingPeriod;
+DROP TRIGGER IF EXISTS createDueDate;
 DELIMITER //
-CREATE TRIGGER shortenBookingPeriod
+CREATE TRIGGER createDueDate
 BEFORE INSERT ON BOOKING
 FOR EACH ROW
 BEGIN
